@@ -11,6 +11,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using Voice;
 using Object = UnityEngine.Object;
+//new add
+using System.IO;
+using System.Collections.Generic;
+
 
 namespace LimbusLocalize.LLC;
 
@@ -210,12 +214,60 @@ public static class ChineseSetting
         var tmp = textGroup.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
         if (!tmp.text.Equals("Proelium Fatale"))
             return;
-        tmp.font = ChineseFont.Tmpchinesefonts[0];
-        tmp.text = "<b>命定之战</b>";
-        tmp = textGroup.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
-        tmp.font = ChineseFont.Tmpchinesefonts[0];
-        tmp.text = "凡跨入此门之人，当放弃一切希望";
+        List<string> _loadingTexts;
+        List<string> _loadingTextsTitles;
+        _loadingTexts = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTexts.md")];
+        _loadingTextsTitles = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTextsTitles.md")];
+        if (_loadingTexts.Count != _loadingTextsTitles.Count){ //不等于就随机
+            tmp.font = ChineseFont.Tmpchinesefonts[0];
+            tmp.text = "<b>"+SelectOne(_loadingTextsTitles)+"</b>";
+            tmp = textGroup.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
+            tmp.font = ChineseFont.Tmpchinesefonts[0];
+            tmp.text = SelectOne(_loadingTexts);
+        } else {
+            int i = UnityEngine.Random.RandomRangeInt(0,_loadingTexts.Count);
+            LLCMod.LogWarning("i="+i.ToString());
+            tmp.font = ChineseFont.Tmpchinesefonts[0];
+            tmp.text = "<b>"+SelectOne(_loadingTextsTitles,i)+"</b>";
+            tmp = textGroup.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
+            tmp.font = ChineseFont.Tmpchinesefonts[0];
+            tmp.text = SelectOne(_loadingTexts,i);
+        }
     }
+private static void BossBattleStartInit(ActBossBattleStartUI __instance)
+    {
+        if (!IsUseChinese.Value)
+            return;
+        var textGroup = __instance.transform.GetChild(2).GetChild(1);
+        var tmp = textGroup.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
+        if (!tmp.text.Equals("Proelium Fatale"))
+            return;
+        List<string> _loadingTexts;
+        List<string> _loadingTextsTitles;
+        _loadingTexts = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTexts.md")];
+        _loadingTextsTitles = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTextsTitles.md")];
+        if (_loadingTexts.Count != _loadingTextsTitles.Count){ //不等于就随机
+            tmp.font = ChineseFont.Tmpchinesefonts[0];
+            tmp.text = "<b>"+SelectOne(_loadingTextsTitles)+"</b>";
+            tmp = textGroup.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
+            tmp.font = ChineseFont.Tmpchinesefonts[0];
+            tmp.text = SelectOne(_loadingTexts);
+        } else {
+            int i = UnityEngine.Random.RandomRangeInt(0,_loadingTexts.Count);
+            LLCMod.LogWarning("i="+i.ToString());
+            tmp.font = ChineseFont.Tmpchinesefonts[0];
+            tmp.text = "<b>"+SelectOne(_loadingTextsTitles,i)+"</b>";
+            tmp = textGroup.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
+            tmp.font = ChineseFont.Tmpchinesefonts[0];
+            tmp.text = SelectOne(_loadingTexts,i);
+        }
+    }
+    public static T SelectOne<T>(List<T> list,int i = -1){
+        if (i != -1) return list[i]; else {
+            UnityEngine.Random.seed = (int)(Time.deltaTime+Time.realtimeSinceStartup);
+            return list.Count == 0 ? default : list[UnityEngine.Random.Range(0, list.Count)];
+            }
+        }
 
     [HarmonyPatch(typeof(VoiceGenerator), nameof(VoiceGenerator.CreateVoiceInstance))]
     [HarmonyPostfix]
