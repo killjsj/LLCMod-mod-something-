@@ -43,7 +43,7 @@ newtext = """private static void BossBattleStartInit(ActBossBattleStartUI __inst
             LLCMod.LogWarning("titles="+SelectOne(_loadingTextsTitles,i));
         }
     }
-    public static T SelectOne<T>(List<T> list,int i = -1){if (i == -1) return list[i]; else return list.Count == 0 ? default : list[UnityEngine.Random.Range(0, list.Count)];}
+    public static T SelectOne<T>(List<T> list,int i = -1){if (i != -1) return list[i]; else return list.Count == 0 ? default : list[UnityEngine.Random.Range(0, list.Count)];}
 """
 oldusingtext = """using System;
 using BattleUI.Dialog;
