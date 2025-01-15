@@ -74,7 +74,7 @@ jobs:
           echo "filename=$FILENAME" >> $env:GITHUB_OUTPUT
           $TAG_NAME = "aaa老铁真的吗_$TIMESTAMP"
           echo "tag_name=$TAG_NAME" >> $env:GITHUB_OUTPUT
-          ./build.ps1 aaa老铁真的吗_$TIMESTAMP
+          ./build.ps1 $TIMESTAMP
 
       # 更新 CHANGELOG.md
       - name: Update CHANGELOG.md
