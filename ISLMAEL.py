@@ -29,20 +29,21 @@ newtext = """private static void BossBattleStartInit(ActBossBattleStartUI __inst
         }
         if (!tmp.text.Equals("Proelium Fatale"))
             return;
-        
-        if (_loadingTexts.Count != _loadingTextsTitles.Count){ //不等于就随机
-            tmp.font = ChineseFont.Tmpchinesefonts[0];
-            tmp.text = "<b>"+SelectOne(_loadingTextsTitles)+"</b>";
-            tmp = textGroup.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
-            tmp.font = ChineseFont.Tmpchinesefonts[0];
-            tmp.text = SelectOne(_loadingTexts);
-        } else {
+        {
             int i = UnityEngine.Random.RandomRangeInt(0,_loadingTexts.Count);
             tmp.font = ChineseFont.Tmpchinesefonts[0];
-            tmp.text = "<b>"+SelectOne(_loadingTextsTitles,i)+"</b>";
+            if(i>_loadingTextsTitles.Count-1){
+                tmp.text = "<b>"+SelectOne(_loadingTextsTitles)+"</b>";
+            } else{
+                tmp.text = "<b>"+SelectOne(_loadingTextsTitles,i)+"</b>";
+            }
             tmp = textGroup.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
             tmp.font = ChineseFont.Tmpchinesefonts[0];
-            tmp.text = SelectOne(_loadingTexts,i);
+            if(i>_loadingTexts.Count-1){
+                tmp.text = "<b>"+SelectOne(_loadingTexts)+"</b>";
+            } else{
+                tmp.text = "<b>"+SelectOne(_loadingTexts,i)+"</b>";
+            }
         }
     }
     public static T SelectOne<T>(List<T> list,int i = -1){
