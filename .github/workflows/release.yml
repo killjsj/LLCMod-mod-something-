@@ -35,7 +35,7 @@ jobs:
       - name: Merge upstream changes
         run: |
           git checkout main
-          git merge upstream/main
+          git pull --rebase upstream main
 
       # 设置 Python 环境
       - name: Set up Python
@@ -49,6 +49,13 @@ jobs:
           python ISLMAEL.py
 
       # 不提取版本号
+      - name: Commit changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          git commit -m "Automated changes by Python script"
+          git push origin main
 
       # 运行编译脚本
       - name: Run build script
