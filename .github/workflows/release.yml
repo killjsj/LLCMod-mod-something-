@@ -29,6 +29,8 @@ jobs:
       # 添加上游仓库并同步更新
       - name: Fetch upstream changes
         run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
           git remote add upstream https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany.git
           git fetch upstream
 
