@@ -53,9 +53,8 @@ jobs:
       # 运行 Python 脚本修改文件
       - name: Run Python script to modify files
         run: |
+          git pull origin main
           python ISLMAEL.py
-
-      # 不提取版本号
       - name: Commit changes
         run: |
           git config --global user.name "GitHub Actions"
