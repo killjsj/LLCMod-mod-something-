@@ -87,4 +87,4 @@ jobs:
           files: |
             Release/*.7z
           body_path: CHANGELOG.md
-          tag_name: aaa老铁真的吗
+          tag_name: aaa老铁真的吗_$RANDOM_NUMBER
