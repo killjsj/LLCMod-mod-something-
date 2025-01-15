@@ -71,6 +71,8 @@ jobs:
           $RANDOM_NUMBER = Get-Random -Minimum 10000 -Maximum 99999
           $FILENAME="LimbusLocalize_BIE_aaa老铁真的吗_$RANDOM_NUMBER.7z"
           echo "filename=$FILENAME" >> $env:GITHUB_OUTPUT
+          $TAG_NAME = "aaa老铁真的吗_$RANDOM_NUMBER"
+          echo "tag_name=$TAG_NAME" >> $env:GITHUB_OUTPUT
           ./build.ps1 aaa老铁真的吗_$RANDOM_NUMBER
 
       # 更新 CHANGELOG.md
@@ -87,4 +89,4 @@ jobs:
           files: |
             Release/*.7z
           body_path: CHANGELOG.md
-          tag_name: aaa老铁真的吗_$RANDOM_NUMBER
+          tag_name: ${{ steps.random_filename.outputs.tag_name }}
