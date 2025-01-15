@@ -47,7 +47,8 @@ newtext = """private static void BossBattleStartInit(ActBossBattleStartUI __inst
     }
     public static T SelectOne<T>(List<T> list,int i = -1){
         if (i != -1) return list[i]; else {
-            UnityEngine.Random.seed = (int)(Time.deltaTime+Time.realtimeSinceStartup + DateTime.Today.Millisecond);
+            UnityEngine.Random.seed = (int)(Time.deltaTime+ Time.timeSinceLevelLoad + DateTime.Today.Day + DateTime.Now.Minute);
+            UnityEngine.Random.InitState(UnityEngine.Random.seed);
             return list.Count == 0 ? default : list[UnityEngine.Random.Range(0, list.Count)];
             }
         }"""
