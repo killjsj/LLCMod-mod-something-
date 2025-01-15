@@ -67,6 +67,7 @@ jobs:
 
       # 运行编译脚本
       - name: Run build script
+        id: Run_Build_script
         run: |
           $RANDOM_NUMBER = Get-Random -Minimum 10000 -Maximum 99999
           $FILENAME="LimbusLocalize_BIE_aaa老铁真的吗_$RANDOM_NUMBER.7z"
@@ -89,4 +90,4 @@ jobs:
           files: |
             Release/*.7z
           body_path: CHANGELOG.md
-          tag_name: ${{ steps.random_filename.outputs.tag_name }}
+          tag_name: ${{ steps.Run_Build_script.outputs.tag_name }}
