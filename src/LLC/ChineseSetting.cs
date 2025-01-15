@@ -242,7 +242,8 @@ public static class ChineseSetting
     public static T SelectOne<T>(List<T> list,int i = -1){
         if (i != -1) return list[i]; else {
             UnityEngine.Random.seed = (int)(Time.deltaTime+ Time.timeSinceLevelLoad + DateTime.Today.Day + DateTime.Now.Minute);
-            UnityEngine.Random.InitState(UnityEngine.Random.seed);
+            UnityEngine.Random.InitState((int)(Time.deltaTime+ Time.timeSinceLevelLoad + DateTime.Today.Day + DateTime.Now.Minute));
+            LLCMod.LogWarning((Time.deltaTime+ Time.timeSinceLevelLoad + DateTime.Today.Day + DateTime.Now.Minute).ToString());
             return list.Count == 0 ? default : list[UnityEngine.Random.Range(0, list.Count)];
             }
         }
