@@ -35,7 +35,11 @@ jobs:
       - name: Merge upstream changes
         run: |
           git checkout main
-          git pull --rebase upstream main
+          git fetch upstream main
+          git checkout upstream/main -- .
+          git add .
+          git commit -m "Sync with upstream and preserve new files"
+          git push origin main
 
       # 设置 Python 环境
       - name: Set up Python
