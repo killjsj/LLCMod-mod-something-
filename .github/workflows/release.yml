@@ -68,14 +68,17 @@ jobs:
       # 运行编译脚本
       - name: Run build script
         run: |
-          ./build.ps1 aaa老铁真的吗
+          RANDOM_NUMBER=$((RANDOM % 100000)) 
+          FILENAME="LimbusLocalize_BIE_aaa老铁真的吗_$RANDOM_NUMBER.7z"
+          echo "filename=$FILENAME" >> $env:GITHUB_OUTPUT
+          ./build.ps1 aaa老铁真的吗_$RANDOM_NUMBER
 
       # 更新 CHANGELOG.md
       - name: Update CHANGELOG.md
         run: |
           Add-Content -Path CHANGELOG.md -Value "
           # 下载
-          - LimbusLocalize_BIE_aaa老铁真的吗.7z 全量包"
+          - LimbusLocalize_BIE_aaa老铁真的吗_$RANDOM_NUMBER.7z 全量包"
 
       # 创建 GitHub Release
       - name: Create Upload Release
