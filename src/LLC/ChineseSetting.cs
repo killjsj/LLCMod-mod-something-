@@ -210,14 +210,19 @@ public static class ChineseSetting
     {
         if (!IsUseChinese.Value)
             return;
-        var textGroup = __instance.transform.GetChild(2).GetChild(1);
-        var tmp = textGroup.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
-        if (!tmp.text.Equals("Proelium Fatale"))
-            return;
         List<string> _loadingTexts;
         List<string> _loadingTextsTitles;
         _loadingTexts = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTexts.md")];
         _loadingTextsTitles = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTextsTitles.md")];
+        var textGroup = __instance.transform.GetChild(2).GetChild(1);
+        var tmp = textGroup.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
+        if (_loadingTexts.Count == 0|| _loadingTextsTitles.Count == 0){
+            LLCMod.LogWarning("nothing in BossBattleStartInitTextsTitles.md or BossBattleStartInitTextsTitles.md,using default.");
+            return;
+        }
+        if (!tmp.text.Equals("Proelium Fatale"))
+            return;
+        
         if (_loadingTexts.Count != _loadingTextsTitles.Count){ //不等于就随机
             tmp.font = ChineseFont.Tmpchinesefonts[0];
             tmp.text = "<b>"+SelectOne(_loadingTextsTitles)+"</b>";
@@ -226,7 +231,6 @@ public static class ChineseSetting
             tmp.text = SelectOne(_loadingTexts);
         } else {
             int i = UnityEngine.Random.RandomRangeInt(0,_loadingTexts.Count);
-            LLCMod.LogWarning("i="+i.ToString());
             tmp.font = ChineseFont.Tmpchinesefonts[0];
             tmp.text = "<b>"+SelectOne(_loadingTextsTitles,i)+"</b>";
             tmp = textGroup.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
