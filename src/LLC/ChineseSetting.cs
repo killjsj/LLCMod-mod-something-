@@ -11,6 +11,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using Voice;
 using Object = UnityEngine.Object;
+//new add
+using System.IO;
+using System.Collections.Generic;
+
 
 namespace LimbusLocalize.LLC;
 
@@ -206,16 +210,43 @@ public static class ChineseSetting
     {
         if (!IsUseChinese.Value)
             return;
+        List<string> _loadingTexts;
+        List<string> _loadingTextsTitles;
+        _loadingTexts = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTexts.md")];
+        _loadingTextsTitles = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTextsTitles.md")];
         var textGroup = __instance.transform.GetChild(2).GetChild(1);
         var tmp = textGroup.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
+        if (_loadingTexts.Count == 0|| _loadingTextsTitles.Count == 0){
+            LLCMod.LogWarning("nothing in BossBattleStartInitTextsTitles.md or BossBattleStartInitTextsTitles.md,using default.");
+            return;
+        }
         if (!tmp.text.Equals("Proelium Fatale"))
             return;
-        tmp.font = ChineseFont.Tmpchinesefonts[0];
-        tmp.text = "<b>命定之战</b>";
-        tmp = textGroup.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
-        tmp.font = ChineseFont.Tmpchinesefonts[0];
-        tmp.text = "凡跨入此门之人，当放弃一切希望";
+        {
+            int i = UnityEngine.Random.RandomRangeInt(0,_loadingTexts.Count);
+            tmp.font = ChineseFont.Tmpchinesefonts[0];
+            if(i>_loadingTextsTitles.Count-1){
+                tmp.text = "<b>"+SelectOne(_loadingTextsTitles)+"</b>";
+            } else{
+                tmp.text = "<b>"+SelectOne(_loadingTextsTitles,i)+"</b>";
+            }
+            tmp = textGroup.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
+            tmp.font = ChineseFont.Tmpchinesefonts[0];
+            if(i>_loadingTexts.Count-1){
+                tmp.text = "<b>"+SelectOne(_loadingTexts)+"</b>";
+            } else{
+                tmp.text = "<b>"+SelectOne(_loadingTexts,i)+"</b>";
+            }
+        }
     }
+    public static T SelectOne<T>(List<T> list,int i = -1){
+        if (i != -1) return list[i]; else {
+            UnityEngine.Random.seed = (int)(Time.deltaTime+ Time.timeSinceLevelLoad + DateTime.Today.Day + DateTime.Now.Minute);
+            UnityEngine.Random.InitState((int)(Time.deltaTime+ Time.timeSinceLevelLoad + DateTime.Today.Day + DateTime.Now.Minute));
+            LLCMod.LogWarning((Time.deltaTime+ Time.timeSinceLevelLoad + DateTime.Today.Day + DateTime.Now.Minute).ToString());
+            return list.Count == 0 ? default : list[UnityEngine.Random.Range(0, list.Count)];
+            }
+        }
 
     [HarmonyPatch(typeof(VoiceGenerator), nameof(VoiceGenerator.CreateVoiceInstance))]
     [HarmonyPostfix]
