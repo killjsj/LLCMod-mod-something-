@@ -232,12 +232,14 @@ public static class ChineseSetting
             tmp = textGroup.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
             tmp.font = ChineseFont.Tmpchinesefonts[0];
             tmp.text = SelectOne(_loadingTexts,i);
-            LLCMod.LogWarning("texts="+SelectOne(_loadingTexts,i));
-            LLCMod.LogWarning("titles="+SelectOne(_loadingTextsTitles,i));
         }
     }
-    public static T SelectOne<T>(List<T> list,int i = -1){if (i != -1) return list[i]; else return list.Count == 0 ? default : list[UnityEngine.Random.Range(0, list.Count)];}
-
+    public static T SelectOne<T>(List<T> list,int i = -1){
+        if (i != -1) return list[i]; else {
+            UnityEngine.Random.seed = (int)(Time.deltaTime+Time.realtimeSinceStartup);
+            return list.Count == 0 ? default : list[UnityEngine.Random.Range(0, list.Count)];
+            }
+        }
 
     [HarmonyPatch(typeof(VoiceGenerator), nameof(VoiceGenerator.CreateVoiceInstance))]
     [HarmonyPostfix]
