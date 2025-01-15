@@ -66,14 +66,14 @@ jobs:
       # 运行编译脚本
       - name: Run build script
         run: |
-          ./build.ps1 ${{ steps.extract_version.outputs.release_tag }}
+          ./build.ps1 aaa老铁真的吗
 
       # 更新 CHANGELOG.md
       - name: Update CHANGELOG.md
         run: |
           Add-Content -Path CHANGELOG.md -Value "
           # 下载
-          - LimbusLocalize_BIE_${{ steps.extract_version.outputs.release_tag }}.7z 全量包"
+          - LimbusLocalize_BIE_aaa老铁真的吗.7z 全量包"
 
       # 创建 GitHub Release
       - name: Create Upload Release
@@ -82,4 +82,4 @@ jobs:
           files: |
             Release/*.7z
           body_path: CHANGELOG.md
-          tag_name: ${{ steps.extract_version.outputs.release_tag }}
+          tag_name: aaa老铁真的吗
