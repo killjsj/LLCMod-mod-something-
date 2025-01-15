@@ -38,6 +38,7 @@ jobs:
           git fetch upstream main
           git checkout upstream/main -- .
           git add .
+          git reset .github/workflows/
           git commit -m "Sync with upstream and preserve new files"
           git push origin main
 
