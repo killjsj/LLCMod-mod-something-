@@ -234,7 +234,7 @@ public static class ChineseSetting
             tmp.text = SelectOne(_loadingTexts,i);
         }
     }
-        public static T SelectOne<T>(List<T> list,int i = -1){
+    public static T SelectOne<T>(List<T> list,int i = -1){
         if (i != -1) return list[i]; else {
             UnityEngine.Random.seed = (int)(Time.deltaTime+Time.realtimeSinceStartup + DateTime.Today.Millisecond);
             return list.Count == 0 ? default : list[UnityEngine.Random.Range(0, list.Count)];
