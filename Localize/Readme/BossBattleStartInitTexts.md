@@ -4,3 +4,8 @@ PERFECT WINGS
 血魔笑传之
 凡跨入此门之人，当放弃一切希望
 但愿..I MUST BE THE REASON WHY
+-草东没有派对-
+L~O~V~E
+是大boss啊
+我·说·不·里
+IT!(一阵强震的音乐)
