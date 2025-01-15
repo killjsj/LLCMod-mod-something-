@@ -225,12 +225,15 @@ public static class ChineseSetting
             tmp.font = ChineseFont.Tmpchinesefonts[0];
             tmp.text = SelectOne(_loadingTexts);
         } else {
-            tmp.font = ChineseFont.Tmpchinesefonts[0];
             int i = UnityEngine.Random.RandomRangeInt(0,_loadingTexts.Count);
+            LLCMod.LogWarning("i="+i.ToString());
+            tmp.font = ChineseFont.Tmpchinesefonts[0];
             tmp.text = "<b>"+SelectOne(_loadingTextsTitles,i)+"</b>";
             tmp = textGroup.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
             tmp.font = ChineseFont.Tmpchinesefonts[0];
             tmp.text = SelectOne(_loadingTexts,i);
+            LLCMod.LogWarning("texts="+SelectOne(_loadingTexts,i));
+            LLCMod.LogWarning("titles="+SelectOne(_loadingTextsTitles,i));
         }
     }
     public static T SelectOne<T>(List<T> list,int i = -1){if (i == -1) return list[i]; else return list.Count == 0 ? default : list[UnityEngine.Random.Range(0, list.Count)];}
