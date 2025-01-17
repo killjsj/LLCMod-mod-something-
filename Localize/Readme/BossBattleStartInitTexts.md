@@ -6,6 +6,4 @@ PERFECT WINGS
 但愿..I MUST BE THE REASON WHY
 -草东没有派对-
 L~O~V~E
-是大boss啊
-我·说·不·里
 IT!(一阵强震的音乐)
