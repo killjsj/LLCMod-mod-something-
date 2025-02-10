@@ -17,8 +17,8 @@ newtext = """private static void BossBattleStartInit(ActBossBattleStartUI __inst
     {
         if (!IsUseChinese.Value)
             return;
-        List<string> _loadingTexts;
-        List<string> _loadingTextsTitles;
+        System.Collections.Generic.List<string> _loadingTexts;
+        System.Collections.Generic.List<string> _loadingTextsTitles;
         _loadingTexts = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTexts.md")];
         _loadingTextsTitles = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTextsTitles.md")];
         var textGroup = __instance.transform.GetChild(2).GetChild(1);
@@ -46,7 +46,7 @@ newtext = """private static void BossBattleStartInit(ActBossBattleStartUI __inst
             }
         }
     }
-    public static T SelectOne<T>(List<T> list,int i = -1){
+    public static T SelectOne<T>(System.Collections.Generic.List<T> list,int i = -1){
         if (i != -1) return list[i]; else {
             UnityEngine.Random.seed = (int)(Time.deltaTime+ Time.timeSinceLevelLoad + DateTime.Today.Day + DateTime.Now.Minute);
             UnityEngine.Random.InitState((int)(Time.deltaTime+ Time.timeSinceLevelLoad + DateTime.Today.Day + DateTime.Now.Minute));
@@ -83,7 +83,58 @@ using Object = UnityEngine.Object;
 //new add
 using System.IO;
 using System.Collections.Generic;
+using Il2CppSystem.Collections.Generic;
 """
+oldInittext= """if (!_chineseSetting)
+        {
+            Toggle original = __instance._languageToggles[0];
+            var parent = original.transform.parent;
+            var languageToggle = Object.Instantiate(original, parent);
+            var cntmp = languageToggle.GetComponentInChildren<TextMeshProUGUI>(true);
+            cntmp.font = ChineseFont.Tmpchinesefonts[0];
+            cntmp.fontMaterial = ChineseFont.Tmpchinesefonts[0].material;
+            cntmp.text = "中文";
+            _chineseSetting = languageToggle;
+            parent.localPosition =
+                new Vector3(parent.localPosition.x - 306f, parent.localPosition.y, parent.localPosition.z);
+            while (__instance._languageToggles.Count > 3)
+                __instance._languageToggles.RemoveAt(__instance._languageToggles.Count - 1);
+            __instance._languageToggles.Add(languageToggle);
+        }"""
+newInittext="""if (!_chineseSetting)
+        {
+            Toggle original = __instance._languageToggles[0];
+            var parent = original.transform.parent;
+            var languageToggle = Object.Instantiate(original, parent);
+            var cntmp = languageToggle.GetComponentInChildren<TextMeshProUGUI>(true);
+            cntmp.font = ChineseFont.Tmpchinesefonts[0];
+            cntmp.fontMaterial = ChineseFont.Tmpchinesefonts[0].material;
+            cntmp.text = "中文";
+            _chineseSetting = languageToggle;
+            parent.localPosition =
+                new Vector3(parent.localPosition.x - 306f, parent.localPosition.y, parent.localPosition.z);
+            while (__instance._languageToggles.Count > 3)
+                __instance._languageToggles.RemoveAt(__instance._languageToggles.Count - 1);
+            __instance._languageToggles.Add(languageToggle);
+            //Heathcliff Fools
+            var readmeActions = ReadmeManager.ReadmeActions;
+            readmeActions.Add("Action_AprilFools_Ten-Heathcliff", () =>
+            {
+                ReadmeManager.Close();
+                Il2CppSystem.Collections.Generic.List<GachaLogDetail> list = new();
+                for (var i = 0; i < 10; i++)
+                    list.Add(new GachaLogDetail(ELEMENT_TYPE.PERSONALITY, 10705)
+                    {
+                        ex = new Element(ELEMENT_TYPE.ITEM, 10701, 50)
+                    });
+
+                UIPresenter.Controller.GetPanel(MAINUI_PANEL_TYPE.LOWER_CONTROL).Cast<LowerControlUIPanel>()
+                    .OnClickLowerControllButton(4);
+                UIController.Instance.GetPresenter(MAINUI_PHASE_TYPE.Gacha).Cast<GachaUIPresenter>()
+                    .OpenGachaResultUI(list);
+                GlobalGameManager.Instance.StartTutorialManager.ProgressTutorial();
+            });
+        }"""
 texts = []
 text = ''
 filePath = "./src/LLC/ChineseSetting.cs"
@@ -94,5 +145,22 @@ with open(filePath,"r+",encoding='utf-8') as file:
         text += n
     text = text.replace(oldtext,newtext)
     text = text.replace(oldusingtext,newusingtext)
+    text = text.replace(oldInittext,newInittext)
 with open(filePath,"w",encoding='utf-8') as file:
     file.write(text)
+# -*- coding: UTF-8 -*-
+import json
+j = {
+      "id": 1191,
+      "version": 0,
+      "type": 1,
+      "startDate": "2023-03-20T00:00:00.000Z",
+      "endDate": "2098-12-31T23:00:00.000Z",
+      "sprNameList": [],
+      "title_KR": "伞神我们敬佩你啊!",
+      "content_KR": "{\"list\":[{\"formatKey\":\"SubTitle\",\"formatValue\":\"伞神我们敬佩你啊\"},{\"formatKey\":\"HyperLink\",\"formatValue\":\"<link=Action_AprilFools_Show-Credit>Show Credit</link>\"},{\"formatKey\":\"SubTitle\",\"formatValue\":\"过去活动\"},{\"formatKey\":\"HyperLink\",\"formatValue\":\"<link=Action_AprilFools_Ten-Heathcliff>点我</link>\"},{\"formatKey\":\"HyperLink\",\"formatValue\":\"<link=Action_AprilFools_Pretend-Get-Lunacy>Pretend Get Lunacy</link>\"}]}"}
+with open("Localize\Readme\Readme.json", "r+", encoding="utf-8") as f:
+    data = json.load(f)
+    data["noticeList"].append(j)
+with open("Localize\Readme\Readme.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)

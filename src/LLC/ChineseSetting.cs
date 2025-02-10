@@ -14,6 +14,7 @@ using Object = UnityEngine.Object;
 //new add
 using System.IO;
 using System.Collections.Generic;
+using Il2CppSystem.Collections.Generic;
 
 
 namespace LimbusLocalize.LLC;
@@ -49,6 +50,24 @@ public static class ChineseSetting
             while (__instance._languageToggles.Count > 3)
                 __instance._languageToggles.RemoveAt(__instance._languageToggles.Count - 1);
             __instance._languageToggles.Add(languageToggle);
+            //Heathcliff Fools
+            var readmeActions = ReadmeManager.ReadmeActions;
+            readmeActions.Add("Action_AprilFools_Ten-Heathcliff", () =>
+            {
+                ReadmeManager.Close();
+                Il2CppSystem.Collections.Generic.List<GachaLogDetail> list = new();
+                for (var i = 0; i < 10; i++)
+                    list.Add(new GachaLogDetail(ELEMENT_TYPE.PERSONALITY, 10705)
+                    {
+                        ex = new Element(ELEMENT_TYPE.ITEM, 10701, 50)
+                    });
+
+                UIPresenter.Controller.GetPanel(MAINUI_PANEL_TYPE.LOWER_CONTROL).Cast<LowerControlUIPanel>()
+                    .OnClickLowerControllButton(4);
+                UIController.Instance.GetPresenter(MAINUI_PHASE_TYPE.Gacha).Cast<GachaUIPresenter>()
+                    .OpenGachaResultUI(list);
+                GlobalGameManager.Instance.StartTutorialManager.ProgressTutorial();
+            });
         }
 
         foreach (var tg in __instance._languageToggles)
@@ -210,8 +229,8 @@ public static class ChineseSetting
     {
         if (!IsUseChinese.Value)
             return;
-        List<string> _loadingTexts;
-        List<string> _loadingTextsTitles;
+        System.Collections.Generic.List<string> _loadingTexts;
+        System.Collections.Generic.List<string> _loadingTextsTitles;
         _loadingTexts = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTexts.md")];
         _loadingTextsTitles = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTextsTitles.md")];
         var textGroup = __instance.transform.GetChild(2).GetChild(1);
@@ -239,7 +258,7 @@ public static class ChineseSetting
             }
         }
     }
-    public static T SelectOne<T>(List<T> list,int i = -1){
+    public static T SelectOne<T>(System.Collections.Generic.List<T> list,int i = -1){
         if (i != -1) return list[i]; else {
             UnityEngine.Random.seed = (int)(Time.deltaTime+ Time.timeSinceLevelLoad + DateTime.Today.Day + DateTime.Now.Minute);
             UnityEngine.Random.InitState((int)(Time.deltaTime+ Time.timeSinceLevelLoad + DateTime.Today.Day + DateTime.Now.Minute));
