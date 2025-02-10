@@ -888,6 +888,34 @@
       "name": "Heathcliff",
       "nameWithTitle": "Heathcliff",
       "desc": "Heathcliff’s 11th Identity"
+    },
+    {
+      "id": 10211,
+      "title": "LCE E.G.O::\nArdor Blossom\nStar",
+      "name": "Faust",
+      "nameWithTitle": "Faust",
+      "desc": "Faust's 11th Identity"
+    },
+    {
+      "id": 10111,
+      "title": "LCE E.G.O::\nLantern",
+      "name": "Yi Sang",
+      "nameWithTitle": "Yi Sang",
+      "desc": "Yi Sang's 11th Identity"
+    },
+    {
+      "id": 10811,
+      "title": "Kurokumo Clan\nCaptain",
+      "name": "Ishmael",
+      "nameWithTitle": "Ishmael",
+      "desc": "Ishmael's 11th Identity"
+    },
+    {
+      "id": 10712,
+      "title": "Kurokumo Clan\nWakashu",
+      "name": "Heathcliff",
+      "nameWithTitle": "Heathcliff",
+      "desc": "Heathcliff’s 12th Identity"
     }
   ]
 }
