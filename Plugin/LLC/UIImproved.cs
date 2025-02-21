@@ -59,6 +59,7 @@ public class something : MonoBehaviour
         {
             actions.Dequeue().Invoke();
         }
+        if(UnityEngine.Input.GetKeyDown()){}
     }
 }
 

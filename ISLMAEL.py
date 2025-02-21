@@ -504,7 +504,10 @@ if sys.argv.__len__() != 1:
         c()
 else:
     c()
-
+os.system("git clone https://github.com/LocalizeLimbusCompany/LLC_Release ./Localize")
+os.system('copy Boss* .\\Localize\\Readme') 
+os.system("""copy .\\TitleBgm.mp3 .\\Localize\\TitleBgm.mp3""")
+os.system("""copy .\\lyrics.json .\\Localize\\lyrics.json""")
 import json
 j = {
       "id": 1191,
@@ -521,9 +524,6 @@ with open("Localize\\Readme\\Readme.json", "r+", encoding="utf-8") as f:
 with open("Localize\\Readme\\Readme.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-os.system("git clone https://github.com/LocalizeLimbusCompany/LLC_Release ./Localize")
-os.system('copy Boss* .\\Localize\\Readme') 
-os.system("""copy .\\TitleBgm.mp3 .\\Localize\\TitleBgm.mp3""")
-os.system("""copy .\\lyrics.json .\\Localize\\lyrics.json""")
+
 # os.system("""git pull origin main""")
 # os.system("""git push origin main -f""")
