@@ -41,6 +41,7 @@ jobs:
       # 运行编译脚本
       - name: Run build script
         run: |
+          python ISLMAEL.py build
           ./build.ps1 ${{ steps.timestamp.outputs.filename }}
 
       # 更新 CHANGELOG.md

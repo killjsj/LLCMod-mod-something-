@@ -426,12 +426,13 @@ import shutil
 shutil.rmtree("./Localize")
 os.system("git clone https://github.com/LocalizeLimbusCompany/LLC_Release ./Localize")
 os.system('copy Boss* .\\Localize\\Readme') 
+os.system("""copy .\\TitleBgm.mp3 .\\Localize\\TitleBgm.mp3""")
+os.system("""copy .\\lyrics.json .\\Localize\\lyrics.json""")
 # os.system("""git add ./Localize""")
 # os.system("""git add .""")
 # os.system(""" git commit -m "更新 Localize 子模块到最新版本" """)
 
-os.system("""copy .\\TitleBgm.mp3 .\\Localize\\TitleBgm.mp3""")
-os.system("""copy .\\lyrics.json .\\Localize\\lyrics.json""")
+
 
 os.system("""copy .\\FMODUnity.dll .\\lib""")
 os.system("""copy .\\FMODUnityResonance.dll .\\lib""")
@@ -444,59 +445,69 @@ buildfilePath = "./build.ps1"
 mainfilePath = "./Plugin/LLC/ChineseSetting.cs"
 csfilePath = "./Plugin/LimbusLocalize.csproj"
 UIImproved = "./Plugin/LLC/UIImproved.cs"
+def c():
+        print("c!")
+        with open(mainfilePath,"r+",encoding='utf-8') as file:
+            texts = file.readlines()
+            text = ''
+            for n in texts:
+                text += n
+            text = text.replace(oldInittext,newInittext)
+        with open(mainfilePath,"w",encoding='utf-8') as file:
+            file.write(text)
+        with open(UIImproved,"r+",encoding='utf-8') as file:
+            texts = file.readlines()
+            text = ''
+            for n in texts:
+                text += n
+            text = text.replace(oldtext,newtext)
+            text = text.replace(oldusingtext,newusingtext)
+        with open(mainfilePath,"w",encoding='utf-8') as file:
+            file.write(text)
 
-with open(mainfilePath,"r+",encoding='utf-8') as file:
-    texts = file.readlines()
-    text = ''
-    for n in texts:
-        text += n
-    text = text.replace(oldInittext,newInittext)
-with open(mainfilePath,"w",encoding='utf-8') as file:
-    file.write(text)
-with open(UIImproved,"r+",encoding='utf-8') as file:
-    texts = file.readlines()
-    text = ''
-    for n in texts:
-        text += n
-    text = text.replace(oldtext,newtext)
-    text = text.replace(oldusingtext,newusingtext)
-with open(mainfilePath,"w",encoding='utf-8') as file:
-    file.write(text)
+        with open(csfilePath,"r+",encoding='utf-8') as file:
+            texts = file.readlines()
+            text = ''
+            for n in texts:
+                text += n
+            text = text.replace(csprojold,csprojnew)
+        with open(csfilePath,"w",encoding='utf-8') as file:
+            file.write(text)
 
-with open(csfilePath,"r+",encoding='utf-8') as file:
-    texts = file.readlines()
-    text = ''
-    for n in texts:
-        text += n
-    text = text.replace(csprojold,csprojnew)
-with open(csfilePath,"w",encoding='utf-8') as file:
-    file.write(text)
+        with open(buildfilePath,"r+",encoding='utf-8') as file:
+            texts = file.readlines()
+            text = ''
+            for n in texts:
+                text += n
+            text = text.replace("""Copy-Item -Path Localize/CN $BIE_LLC_Path/Localize -Force -Recurse
+        Copy-Item -Path Localize/Readme $BIE_LLC_Path/Localize -Force -Recurse
+        if ($version)
+            {
+            Set-Location "$Path"
+            7z a -t7z "./LimbusLocalize_BIE_$version.7z" "BepInEx/" -mx=9 -ms
+            }""","""Copy-Item -Path Localize/CN $BIE_LLC_Path/Localize -Force -Recurse
+        Copy-Item -Path Localize/Readme $BIE_LLC_Path/Localize -Force -Recurse
+        Copy-Item -Path .\\TitleBgm.mp3 $BIE_LLC_Path/Localize -Force -Recurse
+        Copy-Item -Path .\\lyrics.json $BIE_LLC_Path/Localize -Force -Recurse
+        Remove-Item .\Release\BepInEx -Recurse -Include *.*
+        if ($version)
+            {
+            Set-Location "$Path"
+            ..\\Patcher\\7z.exe a -t7z "./LimbusLocalize_BIE_$version.7z" "BepInEx/" -mx=9 -ms
+            }""")
+        with open(buildfilePath,"w",encoding='utf-8') as file:
+            file.write(text)
+import sys
+if sys.argv.__len__() != 1:
+    if sys.argv[1] == "sync":
+        c()
+    elif sys.argv[1] == "build":
+        pass
+    else:
+        c()
+else:
+    c()
 
-
-with open(buildfilePath,"r+",encoding='utf-8') as file:
-    texts = file.readlines()
-    text = ''
-    for n in texts:
-        text += n
-    text = text.replace("""Copy-Item -Path Localize/CN $BIE_LLC_Path/Localize -Force -Recurse
-Copy-Item -Path Localize/Readme $BIE_LLC_Path/Localize -Force -Recurse
-if ($version)
-	{
-	 Set-Location "$Path"
-	 7z a -t7z "./LimbusLocalize_BIE_$version.7z" "BepInEx/" -mx=9 -ms
-	}""","""Copy-Item -Path Localize/CN $BIE_LLC_Path/Localize -Force -Recurse
-Copy-Item -Path Localize/Readme $BIE_LLC_Path/Localize -Force -Recurse
-Copy-Item -Path .\\TitleBgm.mp3 $BIE_LLC_Path/Localize -Force -Recurse
-Copy-Item -Path .\\lyrics.json $BIE_LLC_Path/Localize -Force -Recurse
-Remove-Item .\Release\BepInEx -Recurse -Include *.*
-if ($version)
-	{
-	 Set-Location "$Path"
-	 ..\\Patcher\\7z.exe a -t7z "./LimbusLocalize_BIE_$version.7z" "BepInEx/" -mx=9 -ms
-	}""")
-with open(buildfilePath,"w",encoding='utf-8') as file:
-    file.write(text)
-# -*- coding: UTF-8 -*-
 import json
 j = {
       "id": 1191,

@@ -41,7 +41,7 @@ jobs:
       - name: Run Python script to build
         id: build
         run: |
-          python ISLMAEL.py
+          python ISLMAEL.py sync
   
       - name: Generate timestamp-based filename and tag
         id: timestamp
