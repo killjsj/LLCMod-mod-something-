@@ -18,9 +18,9 @@ using BepInEx.Unity.IL2CPP.UnityEngine;
 //anti replace 
 
 namespace LimbusLocalize.LLC;
-public class DwkUnityMainThreadDispatcher : MonoBehaviour
+public class something : MonoBehaviour
 {
-    private static DwkUnityMainThreadDispatcher instance;
+    private static something instance;
     private readonly Queue<System.Action> actions = new Queue<System.Action>();
 
     private void Awake()
@@ -36,7 +36,7 @@ public class DwkUnityMainThreadDispatcher : MonoBehaviour
         }
     }
 
-    public static DwkUnityMainThreadDispatcher Instance()
+    public static something Instance()
     {
         if (!instance)
         {
@@ -140,7 +140,7 @@ public static class UIImproved
     private static TextMeshProUGUI lyricText;
     private static List<LyricLine> lyrics;
     private static bool inLoginScene = false;
-    private static DwkUnityMainThreadDispatcher dwk;
+    private static something dwk;
     [HarmonyPatch(typeof(FMODUnity.RuntimeManager),
 nameof(FMODUnity.RuntimeManager.PlayOneShot),
 new[] { typeof(FMOD.GUID), typeof(Vector3) })]
@@ -223,6 +223,8 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
     [HarmonyPostfix]
     public static void Postfix(Scene scene, LoadSceneMode mode)
     {
+        GameObject something = new GameObject("something");
+        dwk = something.AddComponent<something>();
         try
         {
             if (scene.name == "LoginScene")
@@ -239,7 +241,6 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
 
                 // 创建一个新的TextMeshProUGUI对象
                 GameObject textObject = new GameObject("LyricText");
-                dwk = textObject.AddComponent<DwkUnityMainThreadDispatcher>();
                 lyricText = textObject.AddComponent<TextMeshProUGUI>();
                 // 设置父对象为Canvas
                 textObject.transform.SetParent(canvas.transform, false);
@@ -299,10 +300,18 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
                 if (currentTime >= (double)lyric.from && currentTime < (double)lyric.to)
                 {
                     // 使用RichText来支持颜色
-                    lyricText.text = $"{lyric.content}";
+                    dwk.Enqueue(() =>
+                    {
+                        lyricText.text = $"{lyric.content}";
+
+                    });
                     break;
                 } else {
-                    lyricText.text = "";
+                    dwk.Enqueue(() =>
+                    {
+                        lyricText.text = "";
+
+                    });
                 }
             }
             System.Threading.Thread.Sleep(25); // 控制刷新率
