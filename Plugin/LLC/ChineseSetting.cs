@@ -10,64 +10,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using Voice;
 using Object = UnityEngine.Object;
-//new add
-using System.IO;
-using UnityEngine.SceneManagement;
-using Il2CppSystem.Threading;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-//anti replace 
 
 namespace LimbusLocalize.LLC;
 
-public class DwkUnityMainThreadDispatcher : MonoBehaviour
-{
-    private static DwkUnityMainThreadDispatcher instance;
-    private readonly Queue<System.Action> actions = new Queue<System.Action>();
-
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    public static DwkUnityMainThreadDispatcher Instance()
-    {
-        if (!instance)
-        {
-            throw new System.Exception("UnityMainThreadDispatcher could not find the UnityMainThreadDispatcher object. Please ensure you have added the MainThreadExecutor Prefab to your scene.");
-        }
-        return instance;
-    }
-
-    public void Enqueue(System.Action action)
-    {
-        lock (actions)
-        {
-            actions.Enqueue(action);
-        }
-    }
-
-    public void Update()
-    {
-        while (actions.Count > 0)
-        {
-            actions.Dequeue().Invoke();
-        }
-    }
-}
 
 public static class ChineseSetting
 {
-    static FMOD.Channel channel = new FMOD.Channel();
-    public static string json = "";
 
     public static ConfigEntry<bool> IsUseChinese =
         LLCMod.LLCSettings.Bind("LLC Settings", "IsUseChinese", true, "是否使用汉化 ( true | false )");

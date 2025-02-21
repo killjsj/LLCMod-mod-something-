@@ -5,28 +5,28 @@ import sys
 import time
 
 
-oldtext = """   [HarmonyPatch(typeof(ActBossBattleStartUI), nameof(ActBossBattleStartUI.Init))]
+oldtext = """    [HarmonyPatch(typeof(ActBossBattleStartUI), "Init")]
     [HarmonyPostfix]
     private static void BossBattleStartInit(ActBossBattleStartUI __instance)
     {
-        if (!IsUseChinese.Value)
-            return;
-        var textGroup = __instance.transform.GetChild(2).GetChild(1);
-        var tmp = textGroup.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
-        if (!tmp.text.Equals("Proelium Fatale"))
-            return;
-        tmp.font = ChineseFont.Tmpchinesefonts[0];
+        var child = __instance.transform.GetChild(2).GetChild(1);
+        var tmp = child.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
+        var img = child.GetChild(1).GetComponentInChildren<Image>();
+
+        if (!tmp.text.Equals("Proelium Fatale")) return;
+
+        img.sprite = ReadmeManager.ReadmeSprites["LLC_BossBattle"];
+        tmp.m_fontAsset = ChineseFont.Tmpchinesefonts[1];
         tmp.text = "<b>命定之战</b>";
-        tmp = textGroup.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
-        tmp.font = ChineseFont.Tmpchinesefonts[0];
+
+        tmp = child.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
         tmp.text = "凡跨入此门之人，当放弃一切希望";
     }"""
-newtext = R"""    [HarmonyPatch(typeof(ActBossBattleStartUI), nameof(ActBossBattleStartUI.Init))]
+newtext = R"""static FMOD.Channel channel = new FMOD.Channel();
+    [HarmonyPatch(typeof(ActBossBattleStartUI), nameof(ActBossBattleStartUI.Init))]
     [HarmonyPostfix]
     private static void BossBattleStartInit(ActBossBattleStartUI __instance)
     {
-        if (!IsUseChinese.Value)
-            return;
         System.Collections.Generic.List<string> _loadingTexts;
         System.Collections.Generic.List<string> _loadingTextsTitles;
         _loadingTexts = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTexts.md")];
@@ -85,11 +85,12 @@ newtext = R"""    [HarmonyPatch(typeof(ActBossBattleStartUI), nameof(ActBossBatt
         [JsonPropertyName("content")]
         public string content { get; set; }
     }//anti replace 
+    public static string json = "";
 
     private static TextMeshProUGUI lyricText;
-    private static List<LyricLine>  lyrics;
-    private static DwkUnityMainThreadDispatcher dwk;
+    private static List<LyricLine> lyrics;
     private static bool inLoginScene = false;
+    private static DwkUnityMainThreadDispatcher dwk;
     [HarmonyPatch(typeof(FMODUnity.RuntimeManager),
 nameof(FMODUnity.RuntimeManager.PlayOneShot),
 new[] { typeof(FMOD.GUID), typeof(Vector3) })]
@@ -114,6 +115,7 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
             PlayLocalMP3(position);
             return false; // 阻止原方法执行
         }
+        LLCMod.LogInfo($"[FMOD] 播放: {eventPath}");
         return true; // 继续执行原方法
 
     }
@@ -162,6 +164,9 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
             __result = default; // 返回空实例
             return false; // 阻止原方法执行
         }
+
+        // 其他事件正常记录
+        LLCMod.LogInfo($"[FMOD] CreateInstance: {path}");
         return true;
     }
     [HarmonyPatch(typeof(SceneManager), "Internal_SceneLoaded")]
@@ -186,7 +191,6 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
                 GameObject textObject = new GameObject("LyricText");
                 dwk = textObject.AddComponent<DwkUnityMainThreadDispatcher>();
                 lyricText = textObject.AddComponent<TextMeshProUGUI>();
-
                 // 设置父对象为Canvas
                 textObject.transform.SetParent(canvas.transform, false);
 
@@ -207,7 +211,7 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
                 lyricText.alignment = TextAlignmentOptions.Center;
                 if (lyrics == null)
                 {
-                    json = File.ReadAllText(Path.Combine(LLCMod.ModPath, "Localize/lyrics.json"), System.Text.Encoding.UTF8);         
+                    json = File.ReadAllText(Path.Combine(LLCMod.ModPath, "Localize/lyrics.json"), System.Text.Encoding.UTF8);
                     lyrics = System.Text.Json.JsonSerializer.Deserialize<List<LyricLine>>(json);
                 }
                 StartSinging();
@@ -228,10 +232,10 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
         if (!inLoginScene)
         {
             inLoginScene = true;
-            new Thread((ThreadStart)UpdateLyrics).Start();
+            new System.Threading.Thread((System.Threading.ThreadStart)UpdateLyrics).Start();
         }
     }
-        private static void UpdateLyrics()
+    private static void UpdateLyrics()
     {
         while (inLoginScene)
         {
@@ -244,69 +248,47 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
             {
                 if (currentTime >= (double)lyric.from && currentTime < (double)lyric.to)
                 {
-                    dwk.Enqueue(() =>
-                   {
-                       lyricText.text = $"{lyric.content}";
-
-                   });
                     // 使用RichText来支持颜色
+                    lyricText.text = $"{lyric.content}";
                     break;
-                }
-                else
-                {
-                    dwk.Enqueue(() =>
-                    {
-                        lyricText.text = "";
-
-                    });
+                } else {
+                    lyricText.text = "";
                 }
             }
-            Thread.Sleep(25); // 控制刷新率
+            System.Threading.Thread.Sleep(25); // 控制刷新率
         }
     }
     public static void StopSinging()
     {
         inLoginScene = false;
         channel.stop();
+        GameObject.Destroy(dwk);
         lyricText.text = "";
     }"""
-oldusingtext = """using System;
-using BattleUI.Dialog;
+oldusingtext = """using BattleUI;
 using BattleUI.Typo;
-using BepInEx.Configuration;
 using HarmonyLib;
-using LocalSave;
 using MainUI;
-using StorySystem;
 using TMPro;
-using UnityEngine;
 using UnityEngine.UI;
-using Voice;
-using Object = UnityEngine.Object;
 
-namespace LimbusLocalize.LLC;
-
-public static class ChineseSetting
-{"""
-newusingtext = """using System;
-using BattleUI.Dialog;
+namespace LimbusLocalize.LLC;"""
+newusingtext = """using BattleUI;
 using BattleUI.Typo;
-using BepInEx.Configuration;
 using HarmonyLib;
-using LocalSave;
 using MainUI;
-using StorySystem;
 using TMPro;
-using UnityEngine;
 using UnityEngine.UI;
-using Voice;
-using Object = UnityEngine.Object;
 //new add
 using System.IO;
 using UnityEngine.SceneManagement;
 using Il2CppSystem.Threading;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using UnityEngine;
+using System;
+using FMOD;
+using System.Threading;
 //anti replace 
 
 namespace LimbusLocalize.LLC;
@@ -353,10 +335,6 @@ public class DwkUnityMainThreadDispatcher : MonoBehaviour
         }
     }
 }
-public static class ChineseSetting
-{
-    static FMOD.Channel channel = new FMOD.Channel();
-    public static string  json = "";
 """
 oldInittext= R"""if (!_chineseSetting)
         {
@@ -426,32 +404,31 @@ csprojnew = """        <PackageReference Include="HarmonyX" Version="2.5.2" Incl
         </Reference>"""
 texts = []
 text = ''
-filePath = "./Plugin/LLC/ChineseSetting.cs"
-filePath2 = "./build.ps1"
-#运行更新(Localize)
-os.system("git remote add upstream https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany.git")
-os.system("git fetch upstream")
-os.system("git checkout main")
-os.system("git checkout --ours .github/workflows/release.yml")
-os.system("git checkout --ours ISLMAEL.py")
 
-os.system("git add .github/workflows/release.yml")
-os.system("git add Plugin/ChineseFont.cs") 
-os.system("git add Plugin/LLC/ChineseSetting.cs")
-os.system("git add Plugin/LimbusLocalize.csproj")
-os.system("git add build.ps1")
+# #运行更新(Localize)
+# os.system("git remote add upstream https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany.git")
+# os.system("git fetch upstream")
+# os.system("git checkout main")
+# os.system("git checkout --ours .github/workflows/release.yml")
+# os.system("git checkout --ours ISLMAEL.py")
 
-os.system("git merge upstream/main --allow-unrelated-histories")
-os.system("git checkout upstream/main .")
-os.system("git add .")
-os.system("git commit -m 'Sync with upstream repository'")
+# os.system("git add .github/workflows/release.yml")
+# os.system("git add Plugin/ChineseFont.cs") 
+# os.system("git add Plugin/LLC/ChineseSetting.cs")
+# os.system("git add Plugin/LimbusLocalize.csproj")
+# os.system("git add build.ps1")
+
+# os.system("git merge upstream/main --allow-unrelated-histories")
+# os.system("git checkout upstream/main .")
+# os.system("git add .")
+# os.system("git commit -m 'Sync with upstream repository'")
 import shutil
 shutil.rmtree("./Localize")
 os.system("git clone https://github.com/LocalizeLimbusCompany/LLC_Release ./Localize")
 os.system('copy Boss* .\\Localize\\Readme') 
-os.system("""git add ./Localize""")
-os.system("""git add .""")
-os.system(""" git commit -m "更新 Localize 子模块到最新版本" """)
+# os.system("""git add ./Localize""")
+# os.system("""git add .""")
+# os.system(""" git commit -m "更新 Localize 子模块到最新版本" """)
 
 os.system("""copy .\\TitleBgm.mp3 .\\Localize\\TitleBgm.mp3""")
 os.system("""copy .\\lyrics.json .\\Localize\\lyrics.json""")
@@ -466,16 +443,23 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 buildfilePath = "./build.ps1"
 mainfilePath = "./Plugin/LLC/ChineseSetting.cs"
 csfilePath = "./Plugin/LimbusLocalize.csproj"
-
+UIImproved = "./Plugin/LLC/UIImproved.cs"
 
 with open(mainfilePath,"r+",encoding='utf-8') as file:
     texts = file.readlines()
     text = ''
     for n in texts:
         text += n
+    text = text.replace(oldInittext,newInittext)
+with open(mainfilePath,"w",encoding='utf-8') as file:
+    file.write(text)
+with open(UIImproved,"r+",encoding='utf-8') as file:
+    texts = file.readlines()
+    text = ''
+    for n in texts:
+        text += n
     text = text.replace(oldtext,newtext)
     text = text.replace(oldusingtext,newusingtext)
-    text = text.replace(oldInittext,newInittext)
 with open(mainfilePath,"w",encoding='utf-8') as file:
     file.write(text)
 
