@@ -70,7 +70,7 @@ public class LLCMod : BasePlugin
                 Harmony.PatchAll(typeof(ChineseFont));
                 Harmony.PatchAll(typeof(ReadmeManager));
                 Harmony.PatchAll(typeof(LoadingManager));
-                Harmony.PatchAll(typeof(SpriteUI));
+                Harmony.PatchAll(typeof(UIImproved));
             }
 
             Harmony.PatchAll(typeof(Manager));
