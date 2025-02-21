@@ -60,8 +60,7 @@ public static class ChineseFont
     public static bool GetChineseFont(string fontname, out TMP_FontAsset fontAsset)
     {
         fontAsset = null;
-        if (Tmpchinesefonts.Count == 0)
-            return false;
+        if (Tmpchinesefonts.Count == 0) return false;
         if (fontname != "KOTRA_BOLD SDF" && !fontname.StartsWith("Corporate-Logo-Bold") &&
             !fontname.StartsWith("HigashiOme-Gothic-C") && fontname != "Pretendard-Regular SDF" &&
             !fontname.StartsWith("SCDream") && fontname != "LiberationSans SDF" && fontname != "Mikodacs SDF" &&
@@ -95,12 +94,13 @@ public static class ChineseFont
         return true;
     }
 
-    [HarmonyPatch(typeof(TextMeshProLanguageSetter), nameof(TextMeshProLanguageSetter.UpdateTMP))]
+    [HarmonyPatch(typeof(TextMeshProLanguageSetter), nameof(TextMeshProLanguageSetter.UpdateTMP), typeof(LOCALIZE_LANGUAGE))]
     [HarmonyPrefix]
     private static void UpdateTMP(TextMeshProLanguageSetter __instance)
     {
-        if (__instance._text.overflowMode == TextOverflowModes.Ellipsis)
-            __instance._text.overflowMode = TextOverflowModes.Overflow;
+        __instance._text.font = Tmpchinesefonts[0];
+        if (__instance._text.overflowMode.Equals("1"))
+            __instance._text.overflowMode = 0;
     }
 
     [HarmonyPatch(typeof(TextMeshProLanguageSetter), nameof(TextMeshProLanguageSetter.Awake))]
@@ -112,6 +112,21 @@ public static class ChineseFont
         if (!__instance._matSetter &&
             __instance.TryGetComponent<TextMeshProMaterialSetter>(out var textMeshProMaterialSetter))
             __instance._matSetter = textMeshProMaterialSetter;
+    }
+
+    [HarmonyPatch(typeof(TextMeshProMaterialSetter), nameof(TextMeshProMaterialSetter.WriteMaterialProperty))]
+    [HarmonyPrefix]
+    private static bool WriteMaterialProperty(TextMeshProMaterialSetter __instance)
+    {
+        if (!__instance._fontMaterialInstance) return false;
+
+        if (!GetChineseFont(__instance._text.font.name, out _) && !IsChineseFont(__instance._text.font))
+            return true;
+
+        if (!__instance.underlayOffsetX.Equals("0"))
+            __instance.underlayOn = true;
+        
+        return false;
     }
 
     #endregion
