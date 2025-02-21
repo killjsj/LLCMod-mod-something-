@@ -14,6 +14,7 @@ using UnityEngine;
 using System;
 using FMOD;
 using System.Threading;
+using BepInEx.Unity.IL2CPP.UnityEngine;
 //anti replace 
 
 namespace LimbusLocalize.LLC;
@@ -75,6 +76,7 @@ public static class UIImproved
     [HarmonyPostfix]
     private static void BossBattleStartInit(ActBossBattleStartUI __instance)
     {
+        // UnityEngine.Input.
         System.Collections.Generic.List<string> _loadingTexts;
         System.Collections.Generic.List<string> _loadingTextsTitles;
         _loadingTexts = [.. File.ReadAllLines(LLCMod.ModPath + "/Localize/Readme/BossBattleStartInitTexts.md")];

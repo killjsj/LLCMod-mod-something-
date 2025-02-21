@@ -17,8 +17,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="Directory.Build.props"/>
-        <None Remove="nuget.config"/>
+        <None Remove="Directory.Build.props" />
+        <None Remove="nuget.config" />
         <None Update="version.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
@@ -68,6 +68,12 @@
         </Reference>
         <Reference Include="UnityEngine.ImageConversionModule">
             <HintPath>..\lib\UnityEngine.ImageConversionModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.InputLegacyModule">
+          <HintPath>..\lib\UnityEngine.InputLegacyModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.InputModule">
+          <HintPath>..\lib\UnityEngine.InputModule.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.JSONSerializeModule">
             <HintPath>..\lib\UnityEngine.JSONSerializeModule.dll</HintPath>
