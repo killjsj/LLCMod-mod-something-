@@ -59,7 +59,8 @@ public class something : MonoBehaviour
         {
             actions.Dequeue().Invoke();
         }
-        if(UnityEngine.Input.GetKeyDown()){}
+        if(UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.G)){
+        }
     }
 }
 
