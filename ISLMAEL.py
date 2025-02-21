@@ -422,12 +422,7 @@ text = ''
 # os.system("git checkout upstream/main .")
 # os.system("git add .")
 # os.system("git commit -m 'Sync with upstream repository'")
-import shutil
-shutil.rmtree("./Localize")
-os.system("git clone https://github.com/LocalizeLimbusCompany/LLC_Release ./Localize")
-os.system('copy Boss* .\\Localize\\Readme') 
-os.system("""copy .\\TitleBgm.mp3 .\\Localize\\TitleBgm.mp3""")
-os.system("""copy .\\lyrics.json .\\Localize\\lyrics.json""")
+
 # os.system("""git add ./Localize""")
 # os.system("""git add .""")
 # os.system(""" git commit -m "更新 Localize 子模块到最新版本" """)
@@ -446,6 +441,8 @@ mainfilePath = "./Plugin/LLC/ChineseSetting.cs"
 csfilePath = "./Plugin/LimbusLocalize.csproj"
 UIImproved = "./Plugin/LLC/UIImproved.cs"
 def c():
+        import shutil
+        shutil.rmtree("./Localize")
         print("c!")
         with open(mainfilePath,"r+",encoding='utf-8') as file:
             texts = file.readlines()
@@ -523,5 +520,10 @@ with open("Localize\\Readme\\Readme.json", "r+", encoding="utf-8") as f:
     data["noticeList"].append(j)
 with open("Localize\\Readme\\Readme.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
+
+os.system("git clone https://github.com/LocalizeLimbusCompany/LLC_Release ./Localize")
+os.system('copy Boss* .\\Localize\\Readme') 
+os.system("""copy .\\TitleBgm.mp3 .\\Localize\\TitleBgm.mp3""")
+os.system("""copy .\\lyrics.json .\\Localize\\lyrics.json""")
 # os.system("""git pull origin main""")
 # os.system("""git push origin main -f""")
