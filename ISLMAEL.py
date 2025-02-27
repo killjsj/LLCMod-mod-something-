@@ -373,6 +373,30 @@ newInittext=R"""try
                     .OpenGachaResultUI(list);
                 GlobalGameManager.Instance.StartTutorialManager.ProgressTutorial();
             });"""
+oldInittext2= R"""using System;
+using System.IO;
+using System.Reflection;
+using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Unity.IL2CPP;
+using HarmonyLib;
+using LimbusLocalize.LLC;
+using UnityEngine;
+
+namespace LimbusLocalize;"""
+newInittext2=R"""using System;
+using System.IO;
+using System.Reflection;
+using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Unity.IL2CPP;
+using HarmonyLib;
+using LimbusLocalize.LLC;
+using UnityEngine;
+using MainUI;
+
+namespace LimbusLocalize;"""
+
 csprojold = """        <PackageReference Include="HarmonyX" Version="2.5.2" IncludeAssets="compile"/>
         <PackageReference Include="Il2CppInterop.Runtime" Version="1.0.0"/>
         <Reference Include="Assembly-CSharp">
@@ -437,6 +461,7 @@ def c():
             for n in texts:
                 text += n
             text = text.replace(oldInittext,newInittext)
+            text = text.replace(oldInittext2,newInittext2)
         with open(mainfilePath,"w",encoding='utf-8') as file:
             file.write(text)
         with open(UIImproved,"r+",encoding='utf-8') as file:
@@ -446,7 +471,7 @@ def c():
                 text += n
             text = text.replace(oldtext,newtext)
             text = text.replace(oldusingtext,newusingtext)
-        with open(mainfilePath,"w",encoding='utf-8') as file:
+        with open(UIImproved,"w",encoding='utf-8') as file:
             file.write(text)
 
         with open(csfilePath,"r+",encoding='utf-8') as file:

@@ -6,8 +6,8 @@ using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using LimbusLocalize.LLC;
-using MainUI;
 using UnityEngine;
+using MainUI;
 
 namespace LimbusLocalize;
 

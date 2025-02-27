@@ -429,25 +429,25 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
             {
                 StopSinging();
             }
-            if (scene.name == "BattleScene")
-            {
-                // thread
-                Canvas battleUICanvas = BattleUIRoot.Instance.battleUICanvas;
-                if (battleUICanvas != null)
-                {
-                    LLCMod.LogInfo("battleUICanvas != null");
+            // if (scene.name == "BattleScene")
+            // {
+            //     // thread
+            //     Canvas battleUICanvas = BattleUIRoot.Instance.battleUICanvas;
+            //     if (battleUICanvas != null)
+            //     {
+            //         LLCMod.LogInfo("battleUICanvas != null");
 
-                    Transform canvasTransform = battleUICanvas.transform;
-                    if (canvasTransform != null)
-                    {
-                        LLCMod.LogInfo("battleUICanvas.transform != null");
+            //         Transform canvasTransform = battleUICanvas.transform;
+            //         if (canvasTransform != null)
+            //         {
+            //             LLCMod.LogInfo("battleUICanvas.transform != null");
 
-                        puaseb = FindButtonByName(canvasTransform, "[Button]Pause");
-                    }
-                }
-                // LLCMod.LogInfo("BattleScene");
-            }
-            else { puaseb = null; }
+            //             puaseb = FindButtonByName(canvasTransform, "[Button]Pause");
+            //         }
+            //     }
+            //     // LLCMod.LogInfo("BattleScene");
+            // }
+            // else { puaseb = null; }
 
         }
         catch (Exception ex)
