@@ -46,24 +46,6 @@ public static class ChineseSetting
             while (__instance._languageToggles.Count > 3)
                 __instance._languageToggles.RemoveAt(__instance._languageToggles.Count - 1);
             __instance._languageToggles.Add(languageToggle);
-            //Heathcliff Fools
-            var readmeActions = ReadmeManager.ReadmeActions;
-            readmeActions.Add("Action_AprilFools_Ten-Heathcliff", () =>
-            {
-                ReadmeManager.Close();
-                Il2CppSystem.Collections.Generic.List<GachaLogDetail> list = new();
-                for (var i = 0; i < 10; i++)
-                    list.Add(new GachaLogDetail(ELEMENT_TYPE.PERSONALITY, 10705)
-                    {
-                        ex = new Element(ELEMENT_TYPE.ITEM, 10701, 50)
-                    });
-
-                UIPresenter.Controller.GetPanel(MAINUI_PANEL_TYPE.LOWER_CONTROL).Cast<LowerControlUIPanel>()
-                    .OnClickLowerControllButton(4);
-                UIController.Instance.GetPresenter(MAINUI_PHASE_TYPE.Gacha).Cast<GachaUIPresenter>()
-                    .OpenGachaResultUI(list);
-                GlobalGameManager.Instance.StartTutorialManager.ProgressTutorial();
-            });
         }
 
         foreach (var tg in __instance._languageToggles)

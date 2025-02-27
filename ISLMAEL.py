@@ -336,38 +336,26 @@ public class DwkUnityMainThreadDispatcher : MonoBehaviour
     }
 }
 """
-oldInittext= R"""if (!_chineseSetting)
+oldInittext= R"""try
         {
-            Toggle original = __instance._languageToggles[0];
-            var parent = original.transform.parent;
-            var languageToggle = Object.Instantiate(original, parent);
-            var cntmp = languageToggle.GetComponentInChildren<TextMeshProUGUI>(true);
-            cntmp.font = ChineseFont.Tmpchinesefonts[0];
-            cntmp.fontMaterial = ChineseFont.Tmpchinesefonts[0].material;
-            cntmp.text = "中文";
-            _chineseSetting = languageToggle;
-            parent.localPosition =
-                new Vector3(parent.localPosition.x - 306f, parent.localPosition.y, parent.localPosition.z);
-            while (__instance._languageToggles.Count > 3)
-                __instance._languageToggles.RemoveAt(__instance._languageToggles.Count - 1);
-            __instance._languageToggles.Add(languageToggle);
-        }"""
-newInittext=R"""if (!_chineseSetting)
+            if (ChineseSetting.IsUseChinese.Value)
+            {
+                Manager.InitLocalizes(new DirectoryInfo(ModPath + "/Localize/CN"));
+                Harmony.PatchAll(typeof(ChineseFont));
+                Harmony.PatchAll(typeof(ReadmeManager));
+                Harmony.PatchAll(typeof(LoadingManager));
+                Harmony.PatchAll(typeof(UIImproved));
+            }"""
+newInittext=R"""try
         {
-            Toggle original = __instance._languageToggles[0];
-            var parent = original.transform.parent;
-            var languageToggle = Object.Instantiate(original, parent);
-            var cntmp = languageToggle.GetComponentInChildren<TextMeshProUGUI>(true);
-            cntmp.font = ChineseFont.Tmpchinesefonts[0];
-            cntmp.fontMaterial = ChineseFont.Tmpchinesefonts[0].material;
-            cntmp.text = "中文";
-            _chineseSetting = languageToggle;
-            parent.localPosition =
-                new Vector3(parent.localPosition.x - 306f, parent.localPosition.y, parent.localPosition.z);
-            while (__instance._languageToggles.Count > 3)
-                __instance._languageToggles.RemoveAt(__instance._languageToggles.Count - 1);
-            __instance._languageToggles.Add(languageToggle);
-            //Heathcliff Fools
+            if (ChineseSetting.IsUseChinese.Value)
+            {
+                Manager.InitLocalizes(new DirectoryInfo(ModPath + "/Localize/CN"));
+                Harmony.PatchAll(typeof(ChineseFont));
+                Harmony.PatchAll(typeof(ReadmeManager));
+                Harmony.PatchAll(typeof(LoadingManager));
+                Harmony.PatchAll(typeof(UIImproved));
+            }
             var readmeActions = ReadmeManager.ReadmeActions;
             readmeActions.Add("Action_AprilFools_Ten-Heathcliff", () =>
             {
@@ -384,8 +372,7 @@ newInittext=R"""if (!_chineseSetting)
                 UIController.Instance.GetPresenter(MAINUI_PHASE_TYPE.Gacha).Cast<GachaUIPresenter>()
                     .OpenGachaResultUI(list);
                 GlobalGameManager.Instance.StartTutorialManager.ProgressTutorial();
-            });
-        }"""
+            });"""
 csprojold = """        <PackageReference Include="HarmonyX" Version="2.5.2" IncludeAssets="compile"/>
         <PackageReference Include="Il2CppInterop.Runtime" Version="1.0.0"/>
         <Reference Include="Assembly-CSharp">
@@ -437,7 +424,7 @@ os.system("""chcp 65001""")
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 buildfilePath = "./build.ps1"
-mainfilePath = "./Plugin/LLC/ChineseSetting.cs"
+mainfilePath = "./Plugin/LLCMod.cs"
 csfilePath = "./Plugin/LimbusLocalize.csproj"
 UIImproved = "./Plugin/LLC/UIImproved.cs"
 def c():

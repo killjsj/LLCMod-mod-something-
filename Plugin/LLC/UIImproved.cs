@@ -6,23 +6,36 @@ using TMPro;
 using UnityEngine.UI;
 //new add
 using System.IO;
+using BepInEx.Unity.IL2CPP.Utils;
 using UnityEngine.SceneManagement;
 using Il2CppSystem.Threading;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using UnityEngine;
+using BepInEx.Unity.IL2CPP;
 using System;
 using FMOD;
 using System.Threading;
 using BepInEx.Unity.IL2CPP.UnityEngine;
+using UnityEngine.EventSystems;
+using Il2CppInterop.Runtime;
+using System.Collections;
+using Input = UnityEngine.Input;
+using System.Text;
+using System.Linq;
+using UnityEngine.Video;
+// using UnityEngine.Physics2D;
 //anti replace 
 
 namespace LimbusLocalize.LLC;
-public class something : MonoBehaviour
+public class something_mo : MonoBehaviour
 {
-    private static something instance;
+    private static something_mo instance;
     private readonly Queue<System.Action> actions = new Queue<System.Action>();
 
+    private string screenshotPath = Application.dataPath + "/temp.png";
+    private Canvas canvas;
+    private RawImage rawImage;
     private void Awake()
     {
         if (instance == null)
@@ -35,8 +48,26 @@ public class something : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    // private VideoPlayer videoPlayer;
+    //     private void PlayVideo()
+    // {
+    //     // 创建一个新的 GameObject 并添加 VideoPlayer 组件
+    //     GameObject videoObject = new GameObject("VideoPlayer");
+    //     videoPlayer = videoObject.AddComponent<VideoPlayer>();
 
-    public static something Instance()
+    //     string videoPath = Path.Combine(LLCMod.ModPath, "Localize/SUPERERATH.webm");
+    //     // 设置视频路径
+    //     videoPlayer.url = videoPath;
+
+    //     // 设置目标渲染器
+    //     videoPlayer.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
+    //     rawImage = CreateRawImage(null); // 创建新的 RawImage 来显示视频
+    //     rawImage.texture = videoPlayer.targetTexture;
+
+    //     // 播放视频
+    //     videoPlayer.Play();
+    // }
+    public static something_mo Instance()
     {
         if (!instance)
         {
@@ -52,16 +83,100 @@ public class something : MonoBehaviour
             actions.Enqueue(action);
         }
     }
-
-    public void Update()
+    void Update()
     {
         while (actions.Count > 0)
         {
             actions.Dequeue().Invoke();
         }
-        if(UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.G)){
+        if (UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.G))
+        {
+            // Application.CaptureScreenshot(screenshotPath);
+            // something_mo.Instance().StartCoroutine(LoadAndDisplayScreenshot());
+
         }
     }
+    // bool glock = false;
+
+    // private IEnumerator LoadAndDisplayScreenshot()
+    // {
+    //     if (glock)
+    //     {
+    //         glock = true;
+    //         // 捕获屏幕截图
+    //         int width = Screen.width;
+    //         int height = Screen.height;
+    //         Texture2D texture = new Texture2D(width, height, TextureFormat.RGB24, false);
+
+    //         // 读取屏幕像素
+    //         texture.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+    //         texture.Apply();
+    //         // 等待文件写入完成
+    //         // yield return new WaitForEndOfFrame();
+
+    //         // 创建 Canvas
+    //         canvas = CreateCanvas();
+    //         rawImage = CreateRawImage(canvas.transform);
+
+    //         // 将纹理应用到 RawImage
+    //         rawImage.texture = texture;
+    //         PlayVideo();
+
+    //         while (videoPlayer.isPlaying)
+    //     {
+    //         yield return null;
+    //     }
+    //         Destroy(canvas.gameObject);
+    //         // Destroy(canvas.gameObject);
+    //         glock = false;
+    //     }
+    // }
+
+    // private Canvas CreateCanvas()
+    // {
+    //     GameObject canvasObject = new GameObject("ScreenshotCanvas");
+    //     Canvas canvas = canvasObject.AddComponent<Canvas>();
+    //     canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+    //     canvasObject.AddComponent<CanvasScaler>();
+    //     canvasObject.AddComponent<GraphicRaycaster>();
+
+    //     RectTransform rectTransform = canvasObject.GetComponent<RectTransform>();
+    //     rectTransform.anchorMin = Vector2.zero;
+    //     rectTransform.anchorMax = Vector2.one;
+    //     rectTransform.sizeDelta = Vector2.zero;
+
+    //     return canvas;
+    // }
+
+    // private RawImage CreateRawImage(Transform parent)
+    // {
+    //     GameObject rawImageObject = new GameObject("ScreenshotRawImage");
+    //     rawImageObject.transform.SetParent(parent, false);
+    //     RawImage rawImage = rawImageObject.AddComponent<RawImage>();
+
+    //     RectTransform rectTransform = rawImageObject.GetComponent<RectTransform>();
+    //     rectTransform.anchorMin = Vector2.zero;
+    //     rectTransform.anchorMax = Vector2.one;
+    //     rectTransform.sizeDelta = Vector2.zero;
+
+    //     return rawImage;
+    // }
+
+
+
+
+
+    // // 递归获取 GameObject 的树形结构路径
+    // private string GetHierarchyPath(Transform transform)
+    // {
+    //     string path = transform.name;
+    //     while (transform.parent != null)
+    //     {
+    //         transform = transform.parent;
+    //         path = transform.name + "/" + path;
+    //     }
+    //     return path;
+    // }
 }
 
 
@@ -74,6 +189,8 @@ public static class UIImproved
         __instance.img_parryingTypo.sprite = ReadmeManager.ReadmeSprites["LLC_Combo"];
     }
     static FMOD.Channel channel = new FMOD.Channel();
+    // [HarmonyPatch(typeof(BattleUI.), nameof(ActBossBattleStartUI.Init))]
+
     [HarmonyPatch(typeof(ActBossBattleStartUI), nameof(ActBossBattleStartUI.Init))]
     [HarmonyPostfix]
     private static void BossBattleStartInit(ActBossBattleStartUI __instance)
@@ -142,7 +259,7 @@ public static class UIImproved
     private static TextMeshProUGUI lyricText;
     private static List<LyricLine> lyrics;
     private static bool inLoginScene = false;
-    private static something dwk;
+    private static something_mo dwk;
     [HarmonyPatch(typeof(FMODUnity.RuntimeManager),
 nameof(FMODUnity.RuntimeManager.PlayOneShot),
 new[] { typeof(FMOD.GUID), typeof(Vector3) })]
@@ -221,12 +338,50 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
         LLCMod.LogInfo($"[FMOD] CreateInstance: {path}");
         return true;
     }
+    public static Button FindButtonByName(Transform parent, string name)
+    {
+        if (parent == null)
+        {
+            LLCMod.LogInfo("Parent transform is null.");
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+
+        // 使用 GetComponentsInChildren 查找所有子对象中的 Button
+        foreach (Button button in parent.GetComponentsInChildren<Button>(true))
+        {
+            // LLCMod.LogInfo(button.gameObject.name);
+            sb.AppendLine(button.gameObject.name);
+            if (button.gameObject.name == name)
+            {
+                LLCMod.LogInfo($"Button '{name}' found!");
+                return button;
+            }
+            string filePath = Path.Combine(Application.dataPath, $"b.txt");
+            File.WriteAllText(filePath, sb.ToString());
+        }
+
+        LLCMod.LogInfo($"Button '{name}' not found under this parent.");
+        return null;
+    }
+    public static bool req = false;
+
+    public static Button puaseb = null;
     [HarmonyPatch(typeof(SceneManager), "Internal_SceneLoaded")]
     [HarmonyPostfix]
     public static void Postfix(Scene scene, LoadSceneMode mode)
     {
-        GameObject something = new GameObject("something");
-        dwk = something.AddComponent<something>();
+        // PrintSceneTree(scene);
+        GameObject something = new GameObject("something_mo");
+        if (!req)
+        {
+            req = true;
+            Il2CppInterop.Runtime.Injection.ClassInjector.RegisterTypeInIl2Cpp<something_mo>();
+        }
+        Il2CppSystem.Type il2cppType = Il2CppType.Of<something_mo>();
+        dwk = (something_mo)something.AddComponent(il2cppType);
+        LLCMod.LogInfo($"scene:{scene.name}");
+
         try
         {
             if (scene.name == "LoginScene")
@@ -243,6 +398,7 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
 
                 // 创建一个新的TextMeshProUGUI对象
                 GameObject textObject = new GameObject("LyricText");
+                LLCMod.LogInfo("something_mo pass");
                 lyricText = textObject.AddComponent<TextMeshProUGUI>();
                 // 设置父对象为Canvas
                 textObject.transform.SetParent(canvas.transform, false);
@@ -273,10 +429,30 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
             {
                 StopSinging();
             }
+            if (scene.name == "BattleScene")
+            {
+                // thread
+                Canvas battleUICanvas = BattleUIRoot.Instance.battleUICanvas;
+                if (battleUICanvas != null)
+                {
+                    LLCMod.LogInfo("battleUICanvas != null");
+
+                    Transform canvasTransform = battleUICanvas.transform;
+                    if (canvasTransform != null)
+                    {
+                        LLCMod.LogInfo("battleUICanvas.transform != null");
+
+                        puaseb = FindButtonByName(canvasTransform, "[Button]Pause");
+                    }
+                }
+                // LLCMod.LogInfo("BattleScene");
+            }
+            else { puaseb = null; }
+
         }
         catch (Exception ex)
         {
-            LLCMod.LogError($"Error in BGMPostfix: {ex}");
+            LLCMod.LogError($"Error in Postfix: {ex}");
         }
     }
     public static void StartSinging()
@@ -285,38 +461,33 @@ new[] { typeof(FMOD.GUID), typeof(Vector3) })]
         if (!inLoginScene)
         {
             inLoginScene = true;
-            new System.Threading.Thread((System.Threading.ThreadStart)UpdateLyrics).Start();
+            // new System.Threading.Thread((System.Threading.ThreadStart)UpdateLyrics).Start();
+            something_mo.Instance().StartCoroutine(UpdateLyricsCoroutine());
         }
     }
-    private static void UpdateLyrics()
+    private static IEnumerator UpdateLyricsCoroutine()
     {
         while (inLoginScene)
         {
             uint timeMs;
             channel.getPosition(out timeMs, FMOD.TIMEUNIT.MS);
-            double currentTime = (double)timeMs / 1000.0; // 转换为秒
-            if (lyrics == null) return;
+            double currentTime = (double)timeMs / 1000.0;
 
+            // 直接在协程中更新 UI，无需队列
             foreach (var lyric in lyrics)
             {
-                if (currentTime >= (double)lyric.from && currentTime < (double)lyric.to)
+                if (currentTime >= lyric.from && currentTime < lyric.to)
                 {
-                    // 使用RichText来支持颜色
-                    dwk.Enqueue(() =>
-                    {
-                        lyricText.text = $"{lyric.content}";
-
-                    });
+                    lyricText.text = lyric.content;
                     break;
-                } else {
-                    dwk.Enqueue(() =>
-                    {
-                        lyricText.text = "";
-
-                    });
+                }
+                else
+                {
+                    lyricText.text = "";
                 }
             }
-            System.Threading.Thread.Sleep(25); // 控制刷新率
+
+            yield return new WaitForSeconds(0.025f); // 每25毫秒更新一次
         }
     }
     public static void StopSinging()

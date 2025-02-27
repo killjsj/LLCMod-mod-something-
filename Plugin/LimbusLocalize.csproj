@@ -78,6 +78,9 @@
         <Reference Include="UnityEngine.JSONSerializeModule">
             <HintPath>..\lib\UnityEngine.JSONSerializeModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.Physics2DModule">
+          <HintPath>..\lib\UnityEngine.Physics2DModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.PhysicsModule">
             <HintPath>..\lib\UnityEngine.PhysicsModule.dll</HintPath>
         </Reference>
@@ -95,6 +98,9 @@
         </Reference>
         <Reference Include="UnityEngine.UnityWebRequestModule">
             <HintPath>..\lib\UnityEngine.UnityWebRequestModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.VideoModule">
+          <HintPath>..\lib\UnityEngine.VideoModule.dll</HintPath>
         </Reference>
     </ItemGroup>
 </Project>
