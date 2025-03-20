@@ -105,7 +105,7 @@ public class UpdaterPatcher : BasePatcher
         Client.Timeout = TimeSpan.FromSeconds(TimeOuted);
         Client.DefaultRequestHeaders.Add("User-Agent", "LLC-GameClient");
         LogInfo($"Check Mod Update From {UpdateUri}");
-        // ModUpdate();
+        ModUpdate();
         LogInfo("Check Chinese Font Asset Update");
         ChineseFontUpdate();
         if (NeedPopup) GenUpdateText();
