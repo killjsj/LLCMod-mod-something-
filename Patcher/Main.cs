@@ -113,71 +113,65 @@ public class UpdaterPatcher : BasePatcher
         if (NeedPopup) GenUpdateText();
     }
 
-    // private static void ModUpdate()
-    // {
-    //     try
-    //     {
-    //         var versionPath = ModPath + "/version.json";
-    //         var localJson = JsonNode.Parse(File.ReadAllText(versionPath)).AsObject;
-    //         var response = Client.GetStringAsync("https://api.github.com/repos/killjsj/LLCMod-mod-something-/releases/latest").GetAwaiter()
-    //             .GetResult();
+private static void ModUpdate()
+	{
+		try
+		{
+			var versionPath = ModPath + "/version.json";
+			var localJson = JsonNode.Parse(File.ReadAllText(versionPath)).AsObject;
+			var response = Client.GetStringAsync("https://api.zeroasso.top/v2/resource/get_version").GetAwaiter()
+				.GetResult();
+			var serverJson = JsonNode.Parse(response).AsObject;
+			var tag = serverJson["version"].Value;
+			var appOldVersion = localJson["version"].Value;
+			var latestTextVersion = int.Parse(serverJson["resource_version"].Value);
+			var localTextVersion = int.Parse(localJson["resource_version"].Value);
+			// if (Version.Parse(appOldVersion) < Version.Parse(tag))
+			// {
+			// 	LogInfo("New mod version found. Download full mod.");
+			// 	var updatelog = $"LimbusLocalize_BIE_v{tag}.7z";
+			// 	var downloadUri = UpdateUri == NodeType.GitHub
+			// 		? $"https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/download/v{tag}/{updatelog}"
+			// 		: string.Format(UrlDictionary[UpdateUri], updatelog);
+			// 	var filename = Path.Combine(GamePath, updatelog);
+			// 	if (!File.Exists(filename)) DownloadFile(downloadUri, filename);
+			// 	UnarchiveFile(filename, GamePath);
+			// 	NeedPopup = true;
+			// 	UpdateMessage = updatelog;
+			// 	AppOldVersion = appOldVersion;
+			// 	AppUpdateVersion = tag;
+			// }
+			if (latestTextVersion > localTextVersion)
+			{
+				LogInfo("New text resource found. Download resource.");
+				var updatelog = $"LimbusLocalize_Resource_{latestTextVersion}.7z";
+				var downloadUri = UpdateUri == NodeType.GitHub
+					? $"https://github.com/LocalizeLimbusCompany/LLC_Release/releases/download/{latestTextVersion}/{updatelog}"
+					: string.Format(UrlDictionary[UpdateUri], "Resource/" + updatelog);
+				var filename = Path.Combine(GamePath, updatelog);
+				if (!File.Exists(filename))
+					DownloadFile(downloadUri, filename);
+				UnarchiveFile(filename, GamePath);
+				NeedPopup = true;
+				ResourceOldVersion = localTextVersion.ToString();
+				ResourceUpdateVersion = latestTextVersion.ToString();
+				UpdateMessage = serverJson["notice"].Value.Replace("\\n", "\n");
+				LogInfo("Mod Update Success.");
+			}
+			else
+			{
+				LogInfo("No new mod or resource found.");
+			}
+		}
+		catch (Exception ex)
+		{
+			if (ex is OperationCanceledException)
+				LogWarning(
+					"Maybe the timeout time is too short? Please try to change the timeout amount in Com.Bright.LocalizeLimbusCompany.cfg file.");
+			LogWarning($"Mod update failed::\n{ex}");
+		}
+	}
 
-    //         var jsonDoc = JsonDocument.Parse(response);
-    //         var root = jsonDoc.RootElement;
-
-    //         var release = new ExpandoObject();
-    //         release.Url = root.GetProperty("url").GetString();
-    //         release.TagName = root.GetProperty("tag_name").GetString();
-    //         release.Author = new ExpandoObject();
-    //         release.Author.Login = root.GetProperty("author").GetProperty("login").GetString();
-
-    //         var tag = serverJson["name"].Value;
-    //         var appOldVersion = localJson["version"].Value;
-    //         var latestTextVersion = int.Parse(serverJson["resource_version"].Value);
-    //         var localTextVersion = int.Parse(localJson["resource_version"].Value);
-    //         if (Version.Parse(appOldVersion) < Version.Parse(tag))
-    //         {
-    //             LogInfo("New mod version found. Download full mod.");
-    //             var updatelog = $"LimbusLocalize_BIE_v{tag}.7z";
-    //             var downloadUri = $"https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany/releases/download/v{tag}/{updatelog}";
-    //             var filename = Path.Combine(GamePath, updatelog);
-    //             if (!File.Exists(filename)) DownloadFile(downloadUri, filename);
-    //             UnarchiveFile(filename, GamePath);
-    //             NeedPopup = true;
-    //             UpdateMessage = updatelog;
-    //             AppOldVersion = appOldVersion;
-    //             AppUpdateVersion = tag;
-    //         }
-    //         else if (latestTextVersion > localTextVersion)
-    //         {
-    //             LogInfo("New text resource found. Download resource.");
-    //             var updatelog = $"LimbusLocalize_Resource_{latestTextVersion}.7z";
-    //             var downloadUri = UpdateUri == NodeType.GitHub
-    //                 ? $"https://github.com/LocalizeLimbusCompany/LLC_Release/releases/download/{latestTextVersion}/{updatelog}"
-    //                 : string.Format(UrlDictionary[UpdateUri], "Resource/" + updatelog);
-    //             var filename = Path.Combine(GamePath, updatelog);
-    //             if (!File.Exists(filename))
-    //                 DownloadFile(downloadUri, filename);
-    //             UnarchiveFile(filename, GamePath);
-    //             NeedPopup = true;
-    //             ResourceOldVersion = localTextVersion.ToString();
-    //             ResourceUpdateVersion = latestTextVersion.ToString();
-    //             UpdateMessage = serverJson["notice"].Value.Replace("\\n", "\n");
-    //             LogInfo("Mod Update Success.");
-    //         }
-    //         else
-    //         {
-    //             LogInfo("No new mod or resource found.");
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         if (ex is OperationCanceledException)
-    //             LogWarning(
-    //                 "Maybe the timeout time is too short? Please try to change the timeout amount in Com.Bright.LocalizeLimbusCompany.cfg file.");
-    //         LogWarning($"Mod update failed::\n{ex}");
-    //     }
-    // }
 
     private static void ChineseFontUpdate()
     {
