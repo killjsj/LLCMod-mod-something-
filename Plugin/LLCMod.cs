@@ -14,38 +14,37 @@ namespace LimbusLocalize;
 [BepInPlugin(Guid, Name, Version)]
 public class LLCMod : BasePlugin
 {
-    public enum NodeType
-    {
-        Auto,
-        ZhenJiang,
-        GitHub,
-        OneDrive,
-        Tianyi
-    }
+	public enum NodeType
+	{
+		Auto,
+		ZhenJiang,
+		GitHub,
+		Tianyi
+	}
 
-    public const string Guid = $"Com.{Author}.{Name}";
-    public const string Name = "LocalizeLimbusCompany";
-    public const string Version = "0.7.0";
-    public const string Author = "Bright";
-    public const string LLCLink = "https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany";
-    public static ConfigFile LLCSettings;
-    public static string ModPath;
-    public static string GamePath;
-    public static Harmony Harmony = new(Name);
-    public static Action<string, Action> LogFatalError { get; set; }
-    public static Action<string> LogError { get; set; }
-    public static Action<string> LogWarning { get; set; }
-    public static Action<string> LogInfo { get; set; }
+	public const string Guid = $"Com.{Author}.{Name}";
+	public const string Name = "LocalizeLimbusCompany";
+	public const string Version = "0.7.2";
+	public const string Author = "Bright";
+	public const string LLCLink = "https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany";
+	public static ConfigFile LLCSettings;
+	public static string ModPath;
+	public static string GamePath;
+	public static Harmony Harmony = new(Name);
+	public static Action<string, Action> LogFatalError { get; set; }
+	public static Action<string> LogError { get; set; }
+	public static Action<string> LogWarning { get; set; }
+	public static Action<string> LogInfo { get; set; }
 
-    public static void OpenLLCUrl()
-    {
-        Application.OpenURL(LLCLink);
-    }
+	public static void OpenLLCUrl()
+	{
+		Application.OpenURL(LLCLink);
+	}
 
-    public static void OpenGamePath()
-    {
-        Application.OpenURL(GamePath);
-    }
+	public static void OpenGamePath()
+	{
+		Application.OpenURL(GamePath);
+	}
 
     public override void Load()
     {
@@ -110,17 +109,17 @@ public class LLCMod : BasePlugin
         }
     }
 
-    public static void CopyLog()
-    {
-        File.Copy(GamePath + "/BepInEx/LogOutput.log", GamePath + "/Latest(框架日志).log", true);
-        File.Copy(Application.consoleLogPath, GamePath + "/Player(游戏日志).log", true);
-    }
+	public static void CopyLog()
+	{
+		File.Copy(GamePath + "/BepInEx/LogOutput.log", GamePath + "/Latest(框架日志).log", true);
+		File.Copy(Application.consoleLogPath, GamePath + "/Player(游戏日志).log", true);
+	}
 
-    private static void InitUpdateConfig()
-    {
-        LLCSettings.Bind("LLC Settings", "TimeOuted", 10, "自动检查并下载更新的超时时间");
-        LLCSettings.Bind("LLC Settings", "AutoUpdate", true, "是否自动检查并下载更新 ( true | false )");
-        LLCSettings.Bind("LLC Settings", "UpdateURI", NodeType.Auto,
-            "自动更新所使用URI ( Auto：自动 | ZhenJiang：中国镇江服务器 | GitHub：GitHub | OneDrive：Onedrive For Business | Tianyi：天翼网盘 )");
-    }
+	private static void InitUpdateConfig()
+	{
+		LLCSettings.Bind("LLC Settings", "TimeOuted", 10, "自动检查并下载更新的超时时间");
+		LLCSettings.Bind("LLC Settings", "AutoUpdate", true, "是否自动检查并下载更新 ( true | false )");
+		LLCSettings.Bind("LLC Settings", "UpdateURI", NodeType.Auto,
+			"自动更新所使用URI ( Auto：自动 | ZhenJiang：中国镇江服务器 | GitHub：GitHub | OneDrive：Onedrive For Business | Tianyi：天翼网盘 )");
+	}
 }
