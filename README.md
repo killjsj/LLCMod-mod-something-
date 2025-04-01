@@ -1,3 +1,6 @@
+本mod已停止更新,原因见limbus company和0协的最新公告,谢谢!  
+
+
 <div align="center">
 <a href="https://github.com/LocalizeLimbusCompany/LocalizeLimbusCompany">
    <img src="https://avatars.githubusercontent.com/u/129521269" />
